@@ -1,0 +1,14 @@
+[Unit]
+Description=Phat Pager Client Service
+Wants=network.target
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/phat-pager
+ExecStart=/usr/bin/python /home/pi/phat-pager/phat-pager.py -c yellow
+Restart=on-failure
+RestartSec=60s
+
+[Install]
+WantedBy=multi-user.target

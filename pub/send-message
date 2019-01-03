@@ -1,0 +1,18 @@
+#!/bin/sh
+
+MQTT_HOST=localhost
+MQTT_TOPIC=phat-pager
+
+# Construct message from inputs
+MESSAGE=$(echo '{ "ln1": "", "ln2": "", "ln3": "", "ln4": "", "ts": 0 }' \
+	| jq '.ln1 = $ln1' --arg ln1 "$1" \
+	| jq '.ln2 = $ln2' --arg ln2 "$2" \
+	| jq '.ln3 = $ln3' --arg ln3 "$3" \
+	| jq '.ln4 = $ln4' --arg ln4 "$4" \
+	| jq '.ts = $ts' --argjson ts $(date +%s))
+
+echo "Publishing message to ${MQTT_TOPIC} on ${MQTT_HOST}"
+echo "${MESSAGE}"
+
+# Publish to MQTT broker
+mosquitto_pub -h "${MQTT_HOST}" -t "${MQTT_TOPIC}" -r -m "${MESSAGE}"
